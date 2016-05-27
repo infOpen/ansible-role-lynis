@@ -1,0 +1,15 @@
+# Swap files
+*.swp
+
+# Python bytecode
+*.pyc
+
+# Pytest
+.cache
+
+# Vagrant
+.vagrant
+*.retry
+
+# Bundle
+.bundle
