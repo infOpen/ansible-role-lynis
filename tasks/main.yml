@@ -2,3 +2,13 @@
 
 # Main tasks file for lynis role
 
+# Include tasks to manage installation from git
+- name: 'Manage Lynis install from git'
+  include: "{{ role_path }}/tasks/install_from_git.yml"
+  when: "{{ lynis_installation_type == 'git' }}"
+
+
+# Include tasks to manage crontab
+- name: 'Manage crontab tasks'
+  include: "{{ role_path }}/tasks/crontab_management.yml"
+  when: "{{ lynis_manage_crontab }}"

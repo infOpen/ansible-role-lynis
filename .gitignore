@@ -9,6 +9,7 @@
 
 # Vagrant
 .vagrant
+*.retry
 
 # Bundle
 .bundle
