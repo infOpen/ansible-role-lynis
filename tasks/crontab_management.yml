@@ -2,7 +2,6 @@
 
 # Crontab management tasks
 
-# Manage reports directory
 - name: 'Manage reports directory'
   become: True
   file:
@@ -13,7 +12,13 @@
     state: 'directory'
 
 
-# Manage crontab vars
+- name: 'Ensure cron.d folder exists'
+  become: True
+  file:
+    path: '/etc/cron.d'
+    state: 'directory'
+
+
 - name: 'Manage crontab vars'
   become: True
   cron:
@@ -26,7 +31,6 @@
   with_items: "{{ lynis_crontab_vars }}"
 
 
-# Manage crontab jobs
 - name: 'Manage crontab jobs'
   become: True
   no_log: True

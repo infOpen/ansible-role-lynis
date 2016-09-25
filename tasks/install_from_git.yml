@@ -2,6 +2,16 @@
 
 # Tasks about Lynis installation from git repository
 
+- name: 'Install prerequisites'
+  become: True
+  apt:
+    name: "{{ item }}"
+    cache_valid_time: "{{ lynis_apt_cache_valid_time }}"
+    update_cache: "{{ lynis_apt_update_cache }}"
+    state: 'present'
+  with_items: "{{ lynis_git_prerequisites }}"
+
+
 - name: 'Add hostkey if needed'
   become: True
   known_hosts:
