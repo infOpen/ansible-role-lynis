@@ -45,7 +45,7 @@ test-docker:
 
 
 # Target used to execute tests on one tox environment
-test-env: check-prerequisites check-ssh-vars
+test-env: check-docker-prerequisites check-ssh-vars
 test-env: export SSH_PRIVATE_KEY_PATH = $(SSH_PRIVATE_KEY)
 test-env: export SSH_PUBLIC_KEY_PATH = $(SSH_PUBLIC_KEY)
 test-env:
