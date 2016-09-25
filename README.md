@@ -6,31 +6,32 @@ Ansible role to manage Lynis installation and configuration
 
 ## Requirements
 
-This role requires Ansible 2.0 or higher,
+This role requires Ansible 2.1 or higher,
 and platform requirements are listed in the metadata file.
 
 ## Testing
 
-This role contains two tests methods :
-- locally using Vagrant
-- automatically with Travis
+This role has some testing methods:
 
-### Testing dependencies
-- install [Vagrant](https://www.vagrantup.com)
-- install [Vagrant serverspec plugin](https://github.com/jvoorhis/vagrant-serverspec)
-    $ vagrant plugin install vagrant-serverspec
-- install ruby dependencies
-    $ bundle install
+### Automatically with Travis
 
-### Running tests
+Tests runs automatically on Travis on push, release, pr, ... using docker testing containers
 
-#### Run playbook and test
+### Locally with Docker
 
-- if Vagrant box not running
-    $ vagrant up
+You can use Docker to run tests on ephemeral containers.
 
-- if Vagrant box running
-    $ vagrant provision
+```
+make test-docker
+```
+
+### Locally with Vagrant
+
+You can use Vagrant to run tests on virtual machines.
+
+```
+make test-vagrant
+```
 
 ## Role Variables
 

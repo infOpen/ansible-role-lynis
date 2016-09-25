@@ -1,15 +1,14 @@
+# Vagrant files
+.vagrant
+
+# Log files
+*.log
+
 # Swap files
 *.swp
 
-# Python bytecode
-*.pyc
-
-# Pytest
+# Cache & binaries
 .cache
-
-# Vagrant
-.vagrant
+.tox
+*.pyc
 *.retry
-
-# Bundle
-.bundle

@@ -17,6 +17,11 @@ lynis_installation_group: 'root'
 # Default vars used with git installation type
 #---------------------------------------------
 
+lynis_apt_cache_valid_time: 3600
+lynis_apt_update_cache: True
+lynis_git_prerequisites:
+  - 'git'
+
 # Add Github host key
 # See: https://help.github.com/articles/what-are-github-s-ssh-key-fingerprints/
 lynis_git_host_keys:
