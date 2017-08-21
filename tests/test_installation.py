@@ -10,7 +10,7 @@ testinfra_hosts = AnsibleRunner('.molecule/ansible_inventory').get_hosts('all')
 
 @pytest.mark.parametrize('item_type,path,user,group,mode', [
     ('directory', '/var/lib/lynis', 'root', 'root', 0o755),
-    ('directory', '/var/lib/lynis-reports', 'root', 'root', 0o755),
+    ('directory', '/var/log/lynis-reports', 'root', 'root', 0o750),
     ('file', '/etc/cron.d/lynis', 'root', 'root', 0o644),
 ])
 def test_paths_properties(host, item_type, path, user, group, mode):
