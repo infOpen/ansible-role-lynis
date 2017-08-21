@@ -2,6 +2,13 @@
 
 # Main tasks file for lynis role
 
+- name: 'INIT | Manage variables to use for our target'
+  include: "{{ role_path }}/tasks/manage_variables.yml"
+  tags:
+    - 'role::lynis'
+    - 'role::lynis::init'
+
+
 # Include tasks to manage installation from git
 - name: 'Manage Lynis install from git'
   include: "{{ role_path }}/tasks/install_from_git.yml"
