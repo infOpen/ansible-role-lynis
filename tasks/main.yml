@@ -2,19 +2,28 @@
 
 # Main tasks file for lynis role
 
-# Include tasks to manage installation from git
-- name: 'Manage Lynis install from git'
-  include: "{{ role_path }}/tasks/install_from_git.yml"
-  when: "{{ lynis_installation_type == 'git' }}"
+- name: 'INIT | Manage variables to use for our target'
+  include: "{{ role_path }}/tasks/manage_variables.yml"
   tags:
-    - 'lynis::role'
-    - 'lynis::install'
+    - 'role::lynis'
+    - 'role::lynis::config'
+    - 'role::lynis::init'
+    - 'role::lynis::install'
 
 
-# Include tasks to manage crontab
-- name: 'Manage crontab tasks'
-  include: "{{ role_path }}/tasks/crontab_management.yml"
-  when: "{{ lynis_manage_crontab }}"
+- name: 'INSTALL | Manage Lynis install from git'
+  become: True
+  include: "{{ role_path }}/tasks/install/from_git.yml"
+  when: "lynis_installation_type == 'git'"
   tags:
-    - 'lynis::role'
-    - 'lynis::config'
+    - 'role::lynis'
+    - 'role::lynis::install'
+
+
+- name: 'CONFIG | Manage crontab tasks'
+  become: True
+  include: "{{ role_path }}/tasks/manage_crontab.yml"
+  when: "lynis_manage_crontab | bool"
+  tags:
+    - 'role::lynis'
+    - 'role::lynis::config'

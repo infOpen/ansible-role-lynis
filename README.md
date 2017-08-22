@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/infOpen/ansible-role-lynis.svg?branch=master)](https://travis-ci.org/infOpen/ansible-role-lynis)
 
-Ansible role to manage Lynis installation and configuration
+Install lynis package.
 
 ## Requirements
 
@@ -11,31 +11,112 @@ and platform requirements are listed in the metadata file.
 
 ## Testing
 
-This role has some testing methods:
+This role use [Molecule](https://github.com/metacloud/molecule/) to run tests.
 
-### Automatically with Travis
+Locally, you can run tests on Docker (default driver) or Vagrant.
+Travis run tests using Docker driver only.
 
-Tests runs automatically on Travis on push, release, pr, ... using docker testing containers
+Currently, tests are done on:
+- Debian Jessie
+- Ubuntu Trusty
+- Ubuntu Xenial
 
-### Locally with Docker
+and use:
+- Ansible 2.1.x
+- Ansible 2.2.x
+- Ansible 2.3.x
 
-You can use Docker to run tests on ephemeral containers.
+### Running tests
+
+#### Using Docker driver
 
 ```
-make test-docker
+$ tox
 ```
 
-### Locally with Vagrant
-
-You can use Vagrant to run tests on virtual machines.
+#### Using Vagrant driver
 
 ```
-make test-vagrant
+$ MOLECULE_DRIVER=vagrant tox
 ```
 
 ## Role Variables
 
 ### Default role variables
+
+``` yaml
+# Packages and repositories management
+#------------------------------------------------------------------------------
+lynis_repository_cache_valid_time: 3600
+lynis_repository_update_cache: True
+lynis_git_system_prerequisites: "{{ _lynis_git_system_prerequisites | default([]) }}"
+
+
+# Global installation vars
+#------------------------------------------------------------------------------
+# Managed installation types:
+#   - 'git'
+lynis_installation_type: 'git'
+lynis_installation_version: '2.2.0'
+lynis_user:
+  name: 'root'
+  home:
+    path: '/root'
+lynis_group:
+  name: 'root'
+
+
+# GIT installation variables
+#------------------------------------------------------------------------------
+
+# Add Github host key
+# See: https://help.github.com/articles/what-are-github-s-ssh-key-fingerprints/
+lynis_git_host_keys:
+  - name: 'github.com'
+    key: |
+      |1|XSnxOghgS/1AkYu80DtXWOBnhcQ=|fc7xOMfZJSHGhNmO1FJ5sAQt2eA= ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
+    state: 'present'
+lynis_git_accept_host_key: False
+lynis_git_repository: 'https://github.com/CISOfy/lynis.git'
+
+
+# Reports directory management
+#------------------------------------------------------------------------------
+lynis_paths:
+  dirs:
+    install:
+      path: '/var/lib/lynis'
+      mode: '0750'
+    reports:
+      path: '/var/log/lynis-reports'
+      mode: '0750'
+
+
+# Crontab management
+#------------------------------------------------------------------------------
+lynis_manage_crontab: True
+lynis_crontab_file_name: 'lynis'
+lynis_crontab_vars:
+  - name: 'CURRENT_DATE'
+    value: 'date +%Y%m%d'
+    user: "{{ lynis_user.name }}"
+    state: 'present'
+lynis_crontab_jobs:
+  - name: 'Automatic Lynis daily report'
+    file_name: "{{ lynis_crontab_file_name }}"
+    minute: 13
+    hour: 12
+    weekday: '*'
+    day: '*'
+    month: '*'
+    job: >
+      cd {{ lynis_paths.dirs.install.path }}
+      && ./lynis --cronjob --auditor "Automatic daily scan"
+      --report-file "{{ lynis_paths.dirs.reports.path }}/$($CURRENT_DATE)-auto.dat"
+      > "{{ lynis_paths.dirs.reports.path }}/$($CURRENT_DATE)-cron.log" 2>&1
+    user: "{{ lynis_user.name }}"
+    state: 'present'
+```
 
 ## Dependencies
 
@@ -43,9 +124,11 @@ None
 
 ## Example Playbook
 
-    - hosts: servers
-      roles:
-         - { role: infOpen.lynis }
+``` yaml
+- hosts: servers
+  roles:
+    - { role: infOpen.lynis }
+```
 
 ## License
 
@@ -56,4 +139,3 @@ MIT
 Alexandre Chaussier (for Infopen company)
 - http://www.infopen.pro
 - a.chaussier [at] infopen.pro
-

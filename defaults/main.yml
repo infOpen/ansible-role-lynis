@@ -2,25 +2,29 @@
 
 # Defaults vars file for lynis role
 
-# Managed installation types:
-#   - 'git'
-lynis_installation_type: 'git'
+# Packages and repositories management
+#------------------------------------------------------------------------------
+lynis_repository_cache_valid_time: 3600
+lynis_repository_update_cache: True
+lynis_git_system_prerequisites: "{{ _lynis_git_system_prerequisites | default([]) }}"
 
 
 # Global installation vars
-lynis_installation_dir: '/var/lib/lynis'
+#------------------------------------------------------------------------------
+# Managed installation types:
+#   - 'git'
+lynis_installation_type: 'git'
 lynis_installation_version: '2.2.0'
+lynis_user:
+  name: 'root'
+  home:
+    path: '/root'
+lynis_group:
+  name: 'root'
 
-lynis_installation_owner: 'root'
-lynis_installation_group: 'root'
 
-# Default vars used with git installation type
-#---------------------------------------------
-
-lynis_apt_cache_valid_time: 3600
-lynis_apt_update_cache: True
-lynis_git_prerequisites:
-  - 'git'
+# GIT installation variables
+#------------------------------------------------------------------------------
 
 # Add Github host key
 # See: https://help.github.com/articles/what-are-github-s-ssh-key-fingerprints/
@@ -29,25 +33,30 @@ lynis_git_host_keys:
     key: |
       |1|XSnxOghgS/1AkYu80DtXWOBnhcQ=|fc7xOMfZJSHGhNmO1FJ5sAQt2eA= ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
     state: 'present'
-
 lynis_git_accept_host_key: False
 lynis_git_repository: 'https://github.com/CISOfy/lynis.git'
 
+
 # Reports directory management
-#-----------------------------
-lynis_reports_dir_path: '/var/log/lynis-reports'
-lynis_reports_dir_owner: "{{ lynis_installation_owner }}"
-lynis_reports_dir_group: "{{ lynis_installation_group }}"
-lynis_reports_dir_mode: '0750'
+#------------------------------------------------------------------------------
+lynis_paths:
+  dirs:
+    install:
+      path: '/var/lib/lynis'
+      mode: '0750'
+    reports:
+      path: '/var/log/lynis-reports'
+      mode: '0750'
+
 
 # Crontab management
-#-------------------
+#------------------------------------------------------------------------------
 lynis_manage_crontab: True
 lynis_crontab_file_name: 'lynis'
 lynis_crontab_vars:
   - name: 'CURRENT_DATE'
     value: 'date +%Y%m%d'
-    user: "{{ lynis_installation_owner }}"
+    user: "{{ lynis_user.name }}"
     state: 'present'
 lynis_crontab_jobs:
   - name: 'Automatic Lynis daily report'
@@ -57,14 +66,10 @@ lynis_crontab_jobs:
     weekday: '*'
     day: '*'
     month: '*'
-    job: "{{
-      'cd ' ~ lynis_installation_dir
-        ~ ' && ./lynis --cronjob --auditor \"Automatic daily scan\"'
-        ~ ' --report-file \"'
-                ~ lynis_reports_dir_path ~ '/$($CURRENT_DATE)-auto.dat\"'
-        ~ ' --logfile \"'
-                ~ lynis_reports_dir_path ~ '/$($CURRENT_DATE)-auto.log\"'
-        ~ ' > \"' ~ lynis_reports_dir_path ~ '/$($CURRENT_DATE)-cron.log\"'
-        ~ ' 2>&1' }}"
-    user: "{{ lynis_installation_owner }}"
+    job: >
+      cd {{ lynis_paths.dirs.install.path }}
+      && ./lynis --cronjob --auditor "Automatic daily scan"
+      --report-file "{{ lynis_paths.dirs.reports.path }}/$($CURRENT_DATE)-auto.dat"
+      > "{{ lynis_paths.dirs.reports.path }}/$($CURRENT_DATE)-cron.log" 2>&1
+    user: "{{ lynis_user.name }}"
     state: 'present'

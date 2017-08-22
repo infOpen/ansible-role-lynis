@@ -1,0 +1,44 @@
+---
+
+# Tasks about Lynis installation from git repository
+
+- name: 'INSTALL | GIT | Install Debian family prerequisites'
+  apt:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+    cache_valid_time: "{{ lynis_repository_cache_valid_time }}"
+    update_cache: "{{ lynis_repository_update_cache }}"
+  with_items: "{{ lynis_git_system_prerequisites }}"
+  when: "(ansible_os_family | lower) == 'debian'"
+
+
+- name: 'INSTALL | GIT | Ensure .ssh folder exists'
+  file:
+    dest: "{{ lynis_user.home.path }}/.ssh"
+    mode: '0700'
+    state: 'directory'
+
+
+- name: 'INSTALL | GIT | Add hostkey if needed'
+  known_hosts:
+    name: "{{ item.name }}"
+    key: "{{ item.key }}"
+    state: "{{ item.state | default('present') }}"
+  no_log: True
+  with_items: "{{ lynis_git_host_keys }}"
+
+
+- name: 'INSTALL | GIT | Clone Lynis git repository'
+  git:
+    accept_hostkey: "{{ lynis_git_accept_host_key }}"
+    dest: "{{ lynis_paths.dirs.install.path }}"
+    repo: "{{ lynis_git_repository }}"
+    version: "{{ lynis_installation_version }}"
+
+
+- name: 'INSTALL | GIT | Set files permission to root user'
+  file:
+    path: "{{ lynis_paths.dirs.install.path }}"
+    owner: "{{ lynis_paths.dirs.install.owner | default(lynis_user.name) }}"
+    group: "{{ lynis_paths.dirs.install.group | default(lynis_group.name) }}"
+    recurse: True
