@@ -1,6 +1,10 @@
 # lynis
 
-[![Build Status](https://travis-ci.org/infOpen/ansible-role-lynis.svg?branch=master)](https://travis-ci.org/infOpen/ansible-role-lynis)
+[![Build Status](https://img.shields.io/travis/infOpen/ansible-role-lynis/master.svg?label=travis_master)](https://travis-ci.org/infOpen/ansible-role-lynis)
+[![Build Status](https://img.shields.io/travis/infOpen/ansible-role-lynis/develop.svg?label=travis_develop)](https://travis-ci.org/infOpen/ansible-role-lynis)
+[![Updates](https://pyup.io/repos/github/infOpen/ansible-role-lynis/shield.svg)](https://pyup.io/repos/github/infOpen/ansible-role-lynis/)
+[![Python 3](https://pyup.io/repos/github/infOpen/ansible-role-lynis/python-3-shield.svg)](https://pyup.io/repos/github/infOpen/ansible-role-lynis/)
+[![Ansible Role](https://img.shields.io/ansible/role/9965.svg)](https://galaxy.ansible.com/infOpen/lynis/)
 
 Install lynis package.
 
