@@ -5,7 +5,7 @@ galaxy_info:
   description: 'Ansible role to install and configure Lynis'
   company: 'Infopen (http://www.infopen.pro)'
   license: 'MIT'
-  min_ansible_version: '2.1'
+  min_ansible_version: '2.2'
   github_branch: 'master'
   platforms:
     - name: 'Debian'
@@ -16,6 +16,6 @@ galaxy_info:
         - 'trusty'
         - 'xenial'
   galaxy_tags:
-    - 'system'
     - 'security'
+    - 'system'
 dependencies: []
