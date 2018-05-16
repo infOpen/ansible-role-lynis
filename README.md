@@ -44,14 +44,14 @@ $ tox
 
 ``` yaml
 # Packages and repositories management
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 lynis_repository_cache_valid_time: 3600
 lynis_repository_update_cache: True
 lynis_git_system_prerequisites: "{{ _lynis_git_system_prerequisites | default([]) }}"
 
 
 # Global installation vars
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Managed installation types:
 #   - 'git'
 lynis_installation_type: 'git'
@@ -65,7 +65,7 @@ lynis_group:
 
 
 # GIT installation variables
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # Add Github host key
 # See: https://help.github.com/articles/what-are-github-s-ssh-key-fingerprints/
@@ -79,7 +79,7 @@ lynis_git_repository: 'https://github.com/CISOfy/lynis.git'
 
 
 # Reports directory management
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 lynis_paths:
   dirs:
     install:
@@ -91,7 +91,7 @@ lynis_paths:
 
 
 # Crontab management
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 lynis_manage_crontab: True
 lynis_crontab_file_name: 'lynis'
 lynis_crontab_vars:
