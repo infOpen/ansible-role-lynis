@@ -12,6 +12,14 @@
   when: "(ansible_os_family | lower) == 'debian'"
 
 
+- name: 'INSTALL | GIT | Install RedHat family prerequisites'
+  yum:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+  with_items: "{{ lynis_git_system_prerequisites }}"
+  when: "(ansible_os_family | lower) == 'redhat'"
+
+
 - name: 'INSTALL | GIT | Ensure .ssh folder exists'
   file:
     dest: "{{ lynis_user.home.path }}/.ssh"
