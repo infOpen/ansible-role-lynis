@@ -1,30 +1,37 @@
 # lynis
 
-[![Build Status](https://travis-ci.org/infOpen/ansible-role-lynis.svg?branch=master)](https://travis-ci.org/infOpen/ansible-role-lynis)
+[![Build Status](https://img.shields.io/travis/infOpen/ansible-role-lynis/master.svg?label=travis_master)](https://travis-ci.org/infOpen/ansible-role-lynis)
+[![Build Status](https://img.shields.io/travis/infOpen/ansible-role-lynis/develop.svg?label=travis_develop)](https://travis-ci.org/infOpen/ansible-role-lynis)
+[![Updates](https://pyup.io/repos/github/infOpen/ansible-role-lynis/shield.svg)](https://pyup.io/repos/github/infOpen/ansible-role-lynis/)
+[![Python 3](https://pyup.io/repos/github/infOpen/ansible-role-lynis/python-3-shield.svg)](https://pyup.io/repos/github/infOpen/ansible-role-lynis/)
+[![Ansible Role](https://img.shields.io/ansible/role/9965.svg)](https://galaxy.ansible.com/infOpen/lynis/)
 
 Install lynis package.
 
 ## Requirements
 
-This role requires Ansible 2.1 or higher,
+This role requires Ansible 2.4 or higher,
 and platform requirements are listed in the metadata file.
 
 ## Testing
 
 This role use [Molecule](https://github.com/metacloud/molecule/) to run tests.
 
-Locally, you can run tests on Docker (default driver) or Vagrant.
-Travis run tests using Docker driver only.
+Local and Travis tests run tests on Docker by default.
+See molecule documentation to use other backend.
 
 Currently, tests are done on:
+- CentOS 7
 - Debian Jessie
-- Ubuntu Trusty
+- Debian Stretch
 - Ubuntu Xenial
+- Ubuntu Bionic
 
 and use:
-- Ansible 2.1.x
-- Ansible 2.2.x
-- Ansible 2.3.x
+- Ansible 2.4.x
+- Ansible 2.5.x
+- Ansible 2.6.x
+- Ansible 2.7.x
 
 ### Running tests
 
@@ -34,10 +41,12 @@ and use:
 $ tox
 ```
 
-#### Using Vagrant driver
+You can also configure molecule options and molecule command using environment variables:
+* `MOLECULE_OPTIONS` Default: "--debug"
+* `MOLECULE_COMMAND` Default: "test"
 
 ```
-$ MOLECULE_DRIVER=vagrant tox
+$ MOLECULE_OPTIONS='' MOLECULE_COMMAND=converge tox
 ```
 
 ## Role Variables
@@ -46,14 +55,14 @@ $ MOLECULE_DRIVER=vagrant tox
 
 ``` yaml
 # Packages and repositories management
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 lynis_repository_cache_valid_time: 3600
 lynis_repository_update_cache: True
 lynis_git_system_prerequisites: "{{ _lynis_git_system_prerequisites | default([]) }}"
 
 
 # Global installation vars
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Managed installation types:
 #   - 'git'
 lynis_installation_type: 'git'
@@ -67,7 +76,7 @@ lynis_group:
 
 
 # GIT installation variables
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # Add Github host key
 # See: https://help.github.com/articles/what-are-github-s-ssh-key-fingerprints/
@@ -81,7 +90,7 @@ lynis_git_repository: 'https://github.com/CISOfy/lynis.git'
 
 
 # Reports directory management
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 lynis_paths:
   dirs:
     install:
@@ -93,7 +102,7 @@ lynis_paths:
 
 
 # Crontab management
-#------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 lynis_manage_crontab: True
 lynis_crontab_file_name: 'lynis'
 lynis_crontab_vars:

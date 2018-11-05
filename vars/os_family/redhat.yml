@@ -1,0 +1,6 @@
+---
+
+# RedHat OS family specific vars
+
+_lynis_git_system_prerequisites:
+  - name: 'git'
