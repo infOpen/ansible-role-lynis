@@ -1,5 +1,9 @@
 ---
-- name: Prepare
+
+- name: 'PREREQUISITES | Install missing packages'
   hosts: all
-  gather_facts: False
-  tasks: []
+  tasks:
+    - name: 'Ensure cron package'
+      package:
+        name: "{{ (ansible_os_family | lower == 'debian') | ternary('cron', 'cronie') }}"
+        state: 'present'
