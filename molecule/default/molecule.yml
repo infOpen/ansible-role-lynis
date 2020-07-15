@@ -4,43 +4,56 @@ dependency:
   name: 'galaxy'
 driver:
   name: 'docker'
-lint:
-  name: 'yamllint'
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+  flake8
 platforms:
   - name: "lynis-docker-centos7"
-    image: 'centos/systemd:latest'
-    command: '/sbin/init'
-    cap_add:
-      - 'SYS_PTRACE'
+    groups:
+      - 'centos'
+    image: 'jrei/systemd-centos:7'
     privileged: True
-  - name: "lynis-docker-jessie"
-    image: 'minimum2scp/systemd-jessie:latest'
-    command: '/sbin/init'
-    cap_add:
-      - 'SYS_PTRACE'
+    volumes:
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+  - name: "lynis-docker-centos8"
+    groups:
+      - 'centos'
+    image: 'jrei/systemd-centos:8'
     privileged: True
-  - name: "lynis-docker-stretch"
-    image: 'minimum2scp/systemd-stretch:latest'
-    command: '/sbin/init'
-    cap_add:
-      - 'SYS_PTRACE'
+    volumes:
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+  - name: "lynis-docker-debian9"
+    groups:
+      - 'debian'
+    image: 'jrei/systemd-debian:9'
     privileged: True
-  - name: "lynis-docker-xenial"
-    image: 'solita/ubuntu-systemd:16.04'
-    command: '/sbin/init'
-    cap_add:
-      - 'SYS_PTRACE'
+    volumes:
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+  - name: "lynis-docker-debian10"
+    groups:
+      - 'debian'
+    image: 'jrei/systemd-debian:10'
     privileged: True
-  - name: "lynis-docker-bionic"
-    image: 'solita/ubuntu-systemd:18.04'
-    command: '/sbin/init'
-    cap_add:
-      - 'SYS_PTRACE'
+    volumes:
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+  - name: "lynis-docker-ubuntu18"
+    groups:
+      - 'ubuntu'
+    image: 'jrei/systemd-ubuntu:18.04'
     privileged: True
+    volumes:
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+  - name: "lynis-docker-ubuntu20"
+    groups:
+      - 'ubuntu'
+    image: 'jrei/systemd-ubuntu:20.04'
+    privileged: True
+    volumes:
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
 provisioner:
   name: 'ansible'
-  lint:
-    name: 'ansible-lint'
   inventory:
     group_vars:
       all: {}
@@ -51,7 +64,5 @@ verifier:
   name: 'testinfra'
   additional_files_or_dirs:
     - '../../tests'
-  lint:
-    name: 'flake8'
   options:
     sudo: True
