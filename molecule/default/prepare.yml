@@ -3,6 +3,7 @@
 - name: 'PREREQUISITES | Install missing packages'
   hosts: all
   tasks:
-    - package:
+    - name: 'Ensure cron package'
+      package:
         name: "{{ (ansible_os_family | lower == 'debian') | ternary('cron', 'cronie') }}"
         state: 'present'
