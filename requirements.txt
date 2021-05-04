@@ -1,4 +1,4 @@
-ansible-lint==4.2.0
+ansible-lint==5.0.8
 docker==5.0.0
 flake8==3.9.1
 molecule==3.0.6
